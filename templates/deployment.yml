@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonar-qube
+  namespace: {{.Values.namespace}}
+  labels:
+    app: sonar-qube
+spec:
+  selector:
+    matchLabels:
+      app: sonar-qube
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sonar-qube
+    spec:
+      volumes:
+        name: sonar-qube-pvc
+        persistentVolumeClaim:
+          claimName: sonar-qube-pvc
+      containers:
+      - name: sonar-qube
+        image: sonarqube:lts-community
+        env:
+          - name: sonar.jdbc.username
+            value: sonar
+          - name: sonar.jdbc.password
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: sonar_jdbc_password
+          - name: sonar.search.javaAdditionalOpts
+            value: -Dbootstrap.system_call_filter=false
+        ports:
+          - name: sonar-qube-web
+            protocol: TCP
+            containerPort: 9000
+        volumeMounts:
+          - name: sonar-qube-pvc
+            mountPath: "/opt/sonarqube/"

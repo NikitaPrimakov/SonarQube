@@ -1,0 +1,5 @@
+namespace: <your namespace>
+secret:
+  sonar_jdbc_password: sonar
+ingress:
+  web: sonar-qube.local
