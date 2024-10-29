@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonar-qube-web
+  namespace: {{.Values.namespace}}
+  labels:
+    app: sonar-qube
+spec:
+  selector:
+    app: sonar-qube
+  type: NodePort
+  ports:
+  - name: sonar-qube-web
+    protocol: TCP
+    port: 9000

@@ -1,0 +1,19 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonar-qube-web
+  namespace: {{.Values.namespace}}
+spec:
+  rules:
+  - host: {{.Values.ingress.web}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sonar-qube-web
+            port:
+              number: 9000
