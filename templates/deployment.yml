@@ -17,16 +17,12 @@ spec:
       labels:
         app: sonar-qube
     spec:
-      volumes:
-        name: sonar-qube-pvc
-        persistentVolumeClaim:
-          claimName: sonar-qube-pvc
       containers:
       - name: sonar-qube
         image: sonarqube:lts-community
         env:
           - name: sonar.jdbc.username
-            value: sonar
+            value: {{.Values.jdbc_username}}
           - name: sonar.jdbc.password
             valueFrom:
               secretKeyRef:
@@ -34,6 +30,11 @@ spec:
                 key: sonar_jdbc_password
           - name: sonar.search.javaAdditionalOpts
             value: -Dbootstrap.system_call_filter=false
+          - name: sonar.jdbc.url
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                value: sonar_jdbc_url
         ports:
           - name: sonar-qube-web
             protocol: TCP

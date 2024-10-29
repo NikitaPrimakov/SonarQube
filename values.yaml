@@ -1,5 +1,7 @@
 namespace: <your namespace>
+jdbc_username: sonar
 secret:
   sonar_jdbc_password: sonar
+  sonar_jdbc_url: jdbc:postgresql://postgres-api:5432/sonarqube
 ingress:
   web: sonar-qube.local
