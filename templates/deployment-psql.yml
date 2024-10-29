@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  postgresql
+  namespace: {{.Values.namespace}}
+  labels:
+    app:  postgresql
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      volumes:
+        - name: postgresql-pvc
+          persistentVolumeClaim:
+            claimName: postgresql-pvc
+      containers:
+      - name:  postgresql
+        image:  postgres:latest
+        env:
+        - name: POSTGRES_USER
+          value: {{.Values.postgres_user}}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-postgres
+              value: postgres_password
+        - name: POSTGRES_DB
+          value: {{.Values.postgres_db}}
+        ports:
+        - containerPort: 5432
+          name:  postgres-api
+        volumeMounts:
+        - name: postgresql-pvc
+          mountPath: /var/lib/postgresql/data
+      restartPolicy: Always
